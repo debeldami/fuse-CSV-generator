@@ -6,37 +6,19 @@ const { asyncHandler, getUnixTimestamp } = require('./utils');
 const PORT = 3000;
 
 app.get(
-  '/transactions',
+  '/',
   asyncHandler(async (req, res, next) => {
-    const { address, from, to } = req.body;
+    const { address, action, from, to } = req.body;
+    let url;
 
-    const fromTimeStamp = getUnixTimestamp(from);
-    const toTimeStamp = getUnixTimestamp(to);
+    console.log(`${address} ${action} ${from} ${to}`);
 
-    res.status(200).json({
-      message: 'hellow world',
-    });
-  })
-);
-
-app.get(
-  '/internal-transactions',
-  asyncHandler(async (req, res, next) => {
-    const { address, from, to } = req.body;
-
-    const fromTimeStamp = getUnixTimestamp(from);
-    const toTimeStamp = getUnixTimestamp(to);
-
-    res.status(200).json({
-      message: 'hellow world',
-    });
-  })
-);
-
-app.get(
-  '/token-transfer',
-  asyncHandler(async (req, res, next) => {
-    const { address, from, to } = req.body;
+    if (!(address && action && from && to)) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'Please specify all the necessary parameters',
+      });
+    }
 
     const fromTimeStamp = getUnixTimestamp(from);
     const toTimeStamp = getUnixTimestamp(to);
