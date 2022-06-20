@@ -1,0 +1,26 @@
+{
+  "name": "fuse-csv-generator",
+  "version": "1.0.0",
+  "description": "get CSV file of different kind of transaction from the fuse explorer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/debeldami/fuse-CSV-generator.git"
+  },
+  "keywords": [
+    "Fuse",
+    "Network"
+  ],
+  "author": "Debel Damilola",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/debeldami/fuse-CSV-generator/issues"
+  },
+  "homepage": "https://github.com/debeldami/fuse-CSV-generator#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
