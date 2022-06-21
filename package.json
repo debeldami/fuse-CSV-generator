@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/debeldami/fuse-CSV-generator#readme",
   "dependencies": {
-    "express": "^4.18.1"
+    "axios": "^0.27.2",
+    "express": "^4.18.1",
+    "objects-to-csv": "^1.3.6"
   }
 }
