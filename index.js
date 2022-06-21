@@ -15,7 +15,7 @@ app.get(
 
     const { address, action, hash } = req.body;
 
-    if (!(address && action)) {
+    if (!((address || hash) && action)) {
       return res.status(400).json({
         status: 'error',
         message: 'Please specify all the necessary parameters',
@@ -36,7 +36,11 @@ app.get(
 
       const csv = new ObjectsToCsv(result);
 
-      await csv.toDisk(`./${address.slice(0, 6)}_${action}_${Date.now()}.csv`);
+      await csv.toDisk(
+        `./${
+          address ? address.slice(0, 6) : hash.slice(0, 6)
+        }_${action}_${Date.now()}.csv`
+      );
 
       res.json({
         message: 'CSV generated',
