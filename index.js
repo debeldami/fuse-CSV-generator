@@ -10,9 +10,9 @@ async function csvGenegartor(address) {
 
   try {
     const [txlistData, tokentxData, txlistinternalData] = await Promise.all([
-      axios.get(url).data,
-      axios.get(url).data,
-      axios.get(url).data,
+      axios.get(txlistUrl).data,
+      axios.get(tokentxUrl).data,
+      axios.get(txlistinternalUrl).data,
     ]);
 
     const txlistCSV = new ObjectsToCsv(txlistData.result);
