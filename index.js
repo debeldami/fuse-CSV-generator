@@ -1,5 +1,5 @@
 const axios = require('axios');
-const ObjectsToCsv = require('object-to-csv');
+const ObjectsToCsv = require('objects-to-csv');
 
 async function csvGenegartor(address) {
   const txlistUrl = `https://explorer.fuse.io/api?module=account&action=txlist&address=${address}`;
@@ -10,23 +10,25 @@ async function csvGenegartor(address) {
 
   try {
     const [txlistData, tokentxData, txlistinternalData] = await Promise.all([
-      axios.get(txlistUrl).data,
-      axios.get(tokentxUrl).data,
-      axios.get(txlistinternalUrl).data,
+      axios.get(txlistUrl),
+      axios.get(tokentxUrl),
+      axios.get(txlistinternalUrl),
     ]);
 
-    const txlistCSV = new ObjectsToCsv(txlistData.result);
-    const tokentxCSV = new ObjectsToCsv(tokentxData.result);
-    const txlistinternalCSV = new ObjectsToCsv(txlistinternalData.result);
+    const txlistCSV = new ObjectsToCsv(txlistData.data.result);
+    const tokentxCSV = new ObjectsToCsv(tokentxData.data.result);
+    const txlistinternalCSV = new ObjectsToCsv(txlistinternalData.data.result);
 
     await Promise.all([
       txlistCSV.toDisk(`txlist_${address.slice(0, 6)}.csv`),
       tokentxCSV.toDisk(`tokentx_${address.slice(0, 6)}.csv`),
       txlistinternalCSV.toDisk(`txlistinternal_${address.slice(0, 6)}.csv`),
     ]);
+
+    console.log('succesfully generated CSV files');
   } catch (error) {
     console.log(error.message);
   }
 }
 
-csvGenegartor('0x976C102C3D2108DBEb6620323eB086b62FBC1a03');
+csvGenegartor('0xD418c5d0c4a3D87a6c555B7aA41f13EF87485Ec6');
