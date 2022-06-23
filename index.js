@@ -1,58 +1,32 @@
-const express = require('express');
 const axios = require('axios');
-const ObjectsToCsv = require('objects-to-csv');
+const ObjectsToCsv = require('object-to-csv');
 
-const app = express();
-app.use(express.json());
-const { asyncHandler } = require('./utils');
+async function csvGenegartor(address) {
+  const txlistUrl = `https://explorer.fuse.io/api?module=account&action=txlist&address=${address}`;
 
-const PORT = 3000;
+  const tokentxUrl = `https://explorer.fuse.io/api?module=account&action=txlist&address=${address}`;
 
-app.get(
-  '/',
-  asyncHandler(async (req, res, next) => {
-    let url;
+  const txlistinternalUrl = `https://explorer.fuse.io/api/?module=account&action=txlistinternal&address=${address}`;
 
-    const { address, action, hash } = req.body;
+  try {
+    const [txlistData, tokentxData, txlistinternalData] = await Promise.all([
+      axios.get(url).data,
+      axios.get(url).data,
+      axios.get(url).data,
+    ]);
 
-    if (!((address || hash) && action)) {
-      return res.status(400).json({
-        status: 'error',
-        message: 'Please specify all the necessary parameters',
-      });
-    }
+    const txlistCSV = new ObjectsToCsv(txlistData.result);
+    const tokentxCSV = new ObjectsToCsv(tokentxData.result);
+    const txlistinternalCSV = new ObjectsToCsv(txlistinternalData.result);
 
-    if (action === 'txlistinternal') {
-      url = `https://explorer.fuse.io/api?module=account&action=${action}&txhash=${hash}`;
-    } else {
-      url = `https://explorer.fuse.io/api?module=account&action=${action}&address=${address}`;
-      console.log(url);
-    }
+    await Promise.all([
+      txlistCSV.toDisk(`txlist_${address.slice(0, 6)}.csv`),
+      tokentxCSV.toDisk(`tokentx_${address.slice(0, 6)}.csv`),
+      txlistinternalCSV.toDisk(`txlistinternal_${address.slice(0, 6)}.csv`),
+    ]);
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
-    try {
-      const { result } = (await axios.get(url)).data;
-
-      console.log(result);
-
-      const csv = new ObjectsToCsv(result);
-
-      await csv.toDisk(
-        `./${
-          address ? address.slice(0, 6) : hash.slice(0, 6)
-        }_${action}_${Date.now()}.csv`
-      );
-
-      res.json({
-        message: 'CSV generated',
-      });
-    } catch (error) {
-      res.json({
-        message: 'An error occur, check the information you provided',
-      });
-    }
-  })
-);
-
-app.listen(PORT, () => {
-  console.log(`listening at ${PORT}...`);
-});
+csvGenegartor('0x976C102C3D2108DBEb6620323eB086b62FBC1a03');
