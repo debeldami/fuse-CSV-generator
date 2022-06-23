@@ -31,4 +31,5 @@ async function csvGenegartor(address) {
   }
 }
 
+//replace address with the required one
 csvGenegartor('0xD418c5d0c4a3D87a6c555B7aA41f13EF87485Ec6');
